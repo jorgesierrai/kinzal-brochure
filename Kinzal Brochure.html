@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Kinzal — Dossier comercial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<script src="deck-stage.js"></script>
+<style>
+  :root{
+    --marine:#0F1A4A;
+    --marine-2:#1A2A6C;
+    --ink:#0B1438;
+    --blue:#2E5BE0;
+    --violet:#9B3FD4;
+    --violet-2:#C084FC;
+    --bluegray:#1E2A47;
+    --accent3:#0891A6;
+    --light:#F0F4F8;
+    --paper:#F6F6F2;
+    --line:rgba(255,255,255,0.12);
+    --line-dark:rgba(15,26,74,0.14);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#000; }
+
+  /* Slide base */
+  section.slide{
+    font-family:'Inter', system-ui, sans-serif;
+    color:#fff;
+    background:var(--marine);
+    padding:72px 96px 72px;
+    display:flex;
+    flex-direction:column;
+    letter-spacing:-0.005em;
+    overflow:hidden;
+    position:relative;
+  }
+  .display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.015em; }
+  .eyebrow{
+    font-size:20px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.22em; color:var(--violet-2);
+  }
+  .eyebrow.dark{ color:var(--violet); }
+  .rule{ height:1px; background:var(--line); width:100%; }
+  .rule.dark{ background:var(--line-dark); }
+  .mono{ font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size:16px; letter-spacing:0.06em; text-transform:uppercase; }
+
+  /* Header row that appears on most content slides */
+  .s-head{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding-bottom:24px; margin-bottom:40px; border-bottom:1px solid var(--line);
+  }
+  .s-head.dark{ border-color: var(--line-dark); }
+  .s-head .crumb{ font-size:18px; font-weight:600; color:rgba(255,255,255,0.55); letter-spacing:0.18em; text-transform:uppercase; }
+  .s-head.dark .crumb{ color:#6b7391; }
+  .s-head .pageno{ font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size:16px; color:rgba(255,255,255,0.4); }
+  .s-head.dark .pageno{ color:#8a93ad; }
+
+  h1.title{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:92px; line-height:1.03; letter-spacing:-0.02em; margin:0; }
+  h2.title{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:68px; line-height:1.04; letter-spacing:-0.018em; margin:0; }
+  .subtitle{ font-size:30px; line-height:1.45; color:rgba(255,255,255,0.72); max-width:1000px; font-weight:400; }
+  .subtitle.dark{ color:#4a5578; }
+
+  /* Backgrounds — section.slide specificity is (0,1,1), so these need (0,2,1) to win */
+  section.slide.bg-marine{ background:var(--marine); color:#fff; }
+  section.slide.bg-ink{ background:var(--ink); color:#fff; }
+  section.slide.bg-paper{ background:var(--paper); color:#1A2A6C; }
+  section.slide.bg-light{ background:var(--light); color:#1A2A6C; }
+  section.slide.bg-white{ background:#fff; color:#1A2A6C; }
+
+  /* Reusable small bits */
+  .kpi{ display:flex; flex-direction:column; gap:8px; }
+  .kpi .n{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:120px; line-height:1; letter-spacing:-0.03em; display:inline-block; }
+  .kpi .n .u{ color:var(--violet-2); margin-left:4px; }
+  .kpi.dark .n .u{ color:var(--violet); }
+  .kpi .lbl{ font-size:19px; text-transform:uppercase; letter-spacing:0.18em; color:rgba(255,255,255,0.6); font-weight:600; }
+  .kpi.dark .lbl{ color:#6b7391; }
+
+  /* Card */
+  .card{
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:40px;
+    background:rgba(255,255,255,0.04);
+  }
+  .card.light{
+    border:1px solid var(--line-dark);
+    background:#fff;
+  }
+
+  /* Grids */
+  .row{ display:flex; gap:40px; }
+  .col{ display:flex; flex-direction:column; gap:28px; }
+
+  /* Project tile */
+  .p-tile{ position:relative; overflow:hidden; border-radius:16px; }
+  .p-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .p-tile .plab{
+    position:absolute; left:24px; bottom:22px; right:24px;
+    color:#fff;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.5);
+  }
+  .p-tile .plab .name{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:26px; letter-spacing:-0.01em; }
+  .p-tile .plab .sys{ font-size:15px; opacity:0.85; margin-top:2px; }
+  .p-tile .pbadge{
+    position:absolute; top:22px; left:24px;
+    background:rgba(15,20,40,0.65);
+    backdrop-filter: blur(8px);
+    border:1px solid rgba(255,255,255,0.2);
+    color:#fff; padding:8px 14px; border-radius:999px;
+    font-size:14px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+  }
+  .p-tile .grad{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(10,15,40,0.0) 40%, rgba(10,15,40,0.85) 100%);
+  }
+
+  /* cover */
+  .cover{
+    background: radial-gradient(1400px 900px at 75% 30%, rgba(155,63,212,0.22), transparent 60%),
+                linear-gradient(180deg, #0A1340 0%, #0F1A4A 60%, #1A2A6C 100%);
+    position:relative;
+  }
+  .cover .grid-bg{
+    position:absolute; inset:0; opacity:.55;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:80px 80px;
+    mask-image: radial-gradient(ellipse at 50% 40%, black 40%, transparent 80%);
+  }
+
+  .marquee-line{
+    height:1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  }
+
+  .tag{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:8px 14px; border-radius:999px;
+    background:rgba(155,63,212,0.15);
+    border:1px solid rgba(192,132,252,0.4);
+    color:var(--violet-2);
+    font-size:15px; font-weight:600; letter-spacing:0.04em;
+  }
+  .tag.dark{
+    background:rgba(155,63,212,0.08);
+    border:1px solid rgba(155,63,212,0.3);
+    color:var(--violet);
+  }
+
+  .num-badge{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:20px; letter-spacing:0.1em;
+    color:var(--violet-2);
+    width:56px; height:56px; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:12px; background:rgba(155,63,212,0.18); border:1px solid rgba(155,63,212,0.35);
+    flex-shrink:0;
+  }
+  .num-badge.dark{ color:var(--violet); background:rgba(155,63,212,0.1); border:1px solid rgba(155,63,212,0.25); }
+
+  /* Pipeline flow */
+  .flow-step{
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:28px 30px;
+  }
+  .flow-step.active{ background:rgba(155,63,212,0.14); border-color:rgba(155,63,212,0.45); }
+  .flow-step .lbl{ font-size:15px; letter-spacing:0.18em; text-transform:uppercase; color:var(--violet-2); font-weight:700; margin-bottom:10px; }
+  .flow-step .tt{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:26px; color:#fff; line-height:1.2; margin-bottom:6px; }
+  .flow-step .dsc{ font-size:17px; color:rgba(255,255,255,0.65); line-height:1.5; }
+
+  /* Quote */
+  .quote{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:500;
+    font-size:60px;
+    line-height:1.15;
+    letter-spacing:-0.015em;
+    color:#fff;
+  }
+  .quote em{ color:var(--violet-2); font-style:normal; }
+
+  /* table */
+  table.cmp{ width:100%; border-collapse:collapse; font-size:22px; }
+  table.cmp th, table.cmp td{
+    text-align:left; padding:22px 20px;
+    border-bottom:1px solid var(--line-dark);
+    vertical-align:top;
+  }
+  table.cmp th{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600; font-size:19px;
+    text-transform:uppercase; letter-spacing:0.14em;
+    color:#2D3A5A;
+    border-bottom:1px solid var(--line-dark);
+  }
+  table.cmp tr.us td{ background: rgba(155,63,212,0.06); }
+  table.cmp tr.us td:first-child{ color: var(--violet); font-weight:700; }
+  .pill-ok{ display:inline-block; padding:4px 12px; border-radius:999px; background:rgba(155,63,212,0.12); color:var(--violet); font-weight:600; font-size:16px; }
+  .pill-no{ display:inline-block; padding:4px 12px; border-radius:999px; background:#E4E8F0; color:#3C4A6B; font-size:16px; font-weight:500; }
+
+  /* logo word */
+  .logo-word{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    letter-spacing:0.14em;
+    font-size:22px;
+  }
+  .logo-mono{
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size:14px; letter-spacing:0.22em; text-transform:uppercase;
+    color:rgba(255,255,255,0.55);
+  }
+
+  /* Small project footer */
+  .kfooter{
+    position:absolute;
+    left:96px; right:96px; bottom:28px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size:14px; letter-spacing:0.16em; text-transform:uppercase;
+    color:rgba(255,255,255,0.5);
+    pointer-events:none;
+  }
+  .kfooter.dark{ color:#8a93ad; }
+  .kfooter a{ color:inherit; text-decoration:none; }
+
+</style>
+</head>
+<body>
+
+<deck-stage width="1920" height="1080">
+
+<!-- ═══════════════════════════════════════
+     01 — COVER
+═══════════════════════════════════════ -->
+<section class="slide cover" data-label="Cover">
+  <div class="grid-bg"></div>
+
+  <!-- top bar -->
+  <div style="display:flex; justify-content:space-between; align-items:center; position:relative;">
+    <img src="assets_web/kinzal_logo.png" alt="Kinzal" style="height:68px; width:auto; object-fit:contain;" />
+    <div class="logo-mono">Dossier comercial · 2026</div>
+  </div>
+
+  <!-- Body -->
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end; position:relative;">
+    <div style="max-width:1400px;">
+      <div class="eyebrow" style="margin-bottom:36px;">Aluminio arquitectónico · Guadalajara, Jalisco</div>
+      <h1 class="title" style="font-size:150px;">
+        Del perfil extruido<br/>
+        a la fachada<br/>
+        <em style="font-style:normal; color:var(--violet-2);">terminada.</em>
+      </h1>
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:72px; gap:60px;">
+        <p style="font-size:28px; line-height:1.5; max-width:820px; color:rgba(255,255,255,0.72); margin:0;">
+          Socio técnico para desarrolladoras y constructoras que exigen ejecución confiable, acabados premium y cumplimiento real de tiempos de obra.
+        </p>
+        <div style="text-align:right; flex-shrink:0;">
+          <div class="logo-mono" style="margin-bottom:8px;">Preparado para</div>
+          <div style="font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:26px;">Prospecto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     02 — QUIÉNES SOMOS
+═══════════════════════════════════════ -->
+<section class="slide bg-paper" data-label="Quiénes somos">
+  <div class="s-head dark">
+    <div class="crumb">01 · Identidad</div>
+    <div class="pageno">02 / 19</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1.15fr 1fr; gap:96px; flex:1;">
+    <div style="display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div class="eyebrow dark" style="margin-bottom:32px;">Quiénes somos</div>
+        <h2 class="title" style="color:var(--marine); font-size:78px;">
+          Kinzal es un socio<br/>técnico, no un<br/>proveedor más.
+        </h2>
+        <p class="subtitle dark" style="margin-top:40px; font-size:26px; max-width:720px;">
+          Diseñamos, fabricamos e instalamos cancelería de aluminio, fachadas arquitectónicas y muros de vidrio para proyectos verticales, comerciales y residenciales de alto estándar.
+        </p>
+      </div>
+      <div style="display:flex; gap:48px; margin-top:48px;">
+        <div class="kpi dark"><div class="n">12<span class="u">+</span></div><div class="lbl">Años<br/>de oficio</div></div>
+        <div class="kpi dark"><div class="n">15<span class="u">+</span></div><div class="lbl">Proyectos<br/>integrales</div></div>
+        <div class="kpi dark"><div class="n">100<span class="u">%</span></div><div class="lbl">Integración<br/>vertical</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div class="p-tile" style="height:100%;">
+        <img src="assets_web/proyectos/shoji-hero.jpg" alt="Shoji" />
+        <div class="grad"></div>
+        <div class="plab">
+          <div class="mono" style="font-size:13px; opacity:0.85;">Shoji · Guadalajara</div>
+          <div style="font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:26px; margin-top:4px;">SHOJI · GUADALAJARA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     03 — EL PROBLEMA DEL MERCADO
+═══════════════════════════════════════ -->
+<section class="slide bg-marine" data-label="El problema">
+  <div class="s-head">
+    <div class="crumb">02 · Contexto</div>
+    <div class="pageno">03 / 19</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:96px; flex:1; align-items:center;">
+    <div>
+      <div class="eyebrow" style="margin-bottom:28px;">Por qué existimos</div>
+      <h2 class="title">Una industria<br/>fragmentada.</h2>
+      <p class="subtitle" style="margin-top:32px;">
+        La cancelería arquitectónica en México opera en silos: quien extruye no instala, quien instala no fabrica, quien fabrica no hace ingeniería. El desarrollador se queda coordinando proveedores — y cargando con los desfases.
+      </p>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div class="card" style="display:flex; gap:28px; align-items:flex-start;">
+        <div class="num-badge">01</div>
+        <div>
+          <div class="display" style="font-weight:600; font-size:26px; color:#fff; margin-bottom:6px;">Responsabilidades difusas</div>
+          <div style="font-size:19px; color:rgba(255,255,255,0.65); line-height:1.5;">Cuando algo falla, cada eslabón apunta al siguiente. Nadie responde por el resultado final.</div>
+        </div>
+      </div>
+      <div class="card" style="display:flex; gap:28px; align-items:flex-start;">
+        <div class="num-badge">02</div>
+        <div>
+          <div class="display" style="font-weight:600; font-size:26px; color:#fff; margin-bottom:6px;">Tiempos que no se cumplen</div>
+          <div style="font-size:19px; color:rgba(255,255,255,0.65); line-height:1.5;">La obra espera al extrusor, el extrusor espera al proveedor. El calendario se rompe en cada hand-off.</div>
+        </div>
+      </div>
+      <div class="card" style="display:flex; gap:28px; align-items:flex-start;">
+        <div class="num-badge">03</div>
+        <div>
+          <div class="display" style="font-weight:600; font-size:26px; color:#fff; margin-bottom:6px;">Calidad inconsistente</div>
+          <div style="font-size:19px; color:rgba(255,255,255,0.65); line-height:1.5;">Lotes distintos, acabados distintos. Sin control unificado, cada torre termina con piezas dispares.</div>
+        </div>
+      </div>
+      <div class="card" style="display:flex; gap:28px; align-items:flex-start;">
+        <div class="num-badge">04</div>
+        <div>
+          <div class="display" style="font-weight:600; font-size:26px; color:#fff; margin-bottom:6px;">Sobrecostos por intermediación</div>
+          <div style="font-size:19px; color:rgba(255,255,255,0.65); line-height:1.5;">Cada intermediario agrega margen. El precio final del proyecto carga con capas que no añaden valor.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     04 — NUESTRO MODELO
+═══════════════════════════════════════ -->
+<section class="slide bg-ink" data-label="Modelo">
+  <div class="s-head">
+    <div class="crumb">03 · Modelo</div>
+    <div class="pageno">04 / 19</div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:48px; flex:1; justify-content:center;">
+    <div>
+      <div class="eyebrow" style="margin-bottom:28px;">Nuestra respuesta</div>
+      <h2 class="title" style="font-size:88px; max-width:1500px;">
+        Cerramos el ciclo<br/>
+        con <em style="font-style:normal; color:var(--violet-2);">integración vertical</em> completa.
+      </h2>
+    </div>
+    <p class="subtitle" style="max-width:1300px; font-size:28px;">
+      Kinzal controla internamente cada etapa del aluminio: extrusión, pintura electrostática, anodizado, fabricación, logística e instalación. Un solo interlocutor. Un solo responsable. Cero hand-offs que se rompan a medio camino.
+    </p>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-top:24px;">
+      <div class="card">
+        <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:16px;">— Materia prima</div>
+        <div class="display" style="font-weight:600; font-size:30px; margin-bottom:10px;">Controlamos el perfil</div>
+        <div style="font-size:19px; color:rgba(255,255,255,0.65); line-height:1.55;">Acceso directo a planta de extrusión vía nuestra alianza con Aluminio Acevedo. Vemos la barra entrar a la prensa.</div>
+      </div>
+      <div class="card">
+        <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:16px;">— Manufactura</div>
+        <div class="display" style="font-weight:600; font-size:30px; margin-bottom:10px;">Controlamos la máquina</div>
+        <div style="font-size:19px; color:rgba(255,255,255,0.65); line-height:1.55;">Pintura, anodizado y sublimado propios. Cuando algo cambia en obra, ajustamos nosotros mismos.</div>
+      </div>
+      <div class="card">
+        <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:16px;">— Obra</div>
+        <div class="display" style="font-weight:600; font-size:30px; margin-bottom:10px;">Controlamos la fabricación y la instalación</div>
+        <div style="font-size:19px; color:rgba(255,255,255,0.65); line-height:1.55;">Maestros alumineros y supervisores propios en campo. Nada de subcontratación escondida en la cotización.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     05 — CINCO ETAPAS
+═══════════════════════════════════════ -->
+<section class="slide bg-marine" data-label="Cinco etapas">
+  <div class="s-head">
+    <div class="crumb">03 · Modelo</div>
+    <div class="pageno">05 / 19</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1.6fr; gap:96px; flex:1;">
+    <div style="display:flex; flex-direction:column; justify-content:center;">
+      <div class="eyebrow" style="margin-bottom:24px;">Un solo responsable</div>
+      <div style="display:flex; align-items:baseline; gap:28px; margin-bottom:36px;">
+        <div class="display" style="font-weight:700; font-size:200px; line-height:1; color:#fff;">5</div>
+        <div class="display" style="font-weight:700; font-size:72px; color:var(--violet-2);">→ 1</div>
+      </div>
+      <p class="display" style="font-size:38px; line-height:1.2; font-weight:600;">Cinco etapas del aluminio,<br/>un solo responsable.</p>
+      <p style="margin-top:28px; font-size:20px; color:rgba(255,255,255,0.65); line-height:1.6;">Toda la cadena productiva operada por Kinzal. Si algo no quedó bien, siempre hay alguien a quien llamar — y lo corregimos.</p>
+    </div>
+
+    <div style="display:grid; grid-template-rows: repeat(5, 1fr); gap:14px; align-content:stretch;">
+      <div class="flow-step" style="display:grid; grid-template-columns:80px 1fr auto; align-items:center; gap:24px;">
+        <div class="num-badge">01</div>
+        <div>
+          <div class="tt">Extrusión de aluminio</div>
+          <div class="dsc">Barra a perfil. Control desde la prensa.</div>
+        </div>
+        <div class="mono" style="color:var(--violet-2); font-size:14px;">Planta propia</div>
+      </div>
+      <div class="flow-step" style="display:grid; grid-template-columns:80px 1fr auto; align-items:center; gap:24px;">
+        <div class="num-badge">02</div>
+        <div>
+          <div class="tt">Pintura electrostática, anodizado, sublimado</div>
+          <div class="dsc">Color que dura y no varía pieza a pieza.</div>
+        </div>
+        <div class="mono" style="color:var(--violet-2); font-size:14px;">Planta propia</div>
+      </div>
+      <div class="flow-step" style="display:grid; grid-template-columns:80px 1fr auto; align-items:center; gap:24px;">
+        <div class="num-badge">03</div>
+        <div>
+          <div class="tt">Fabricación e ingeniería de taller</div>
+          <div class="dsc">Planos, memorias de cálculo, ensamble y sellado.</div>
+        </div>
+        <div class="mono" style="color:var(--violet-2); font-size:14px;">Taller propio</div>
+      </div>
+      <div class="flow-step" style="display:grid; grid-template-columns:80px 1fr auto; align-items:center; gap:24px;">
+        <div class="num-badge">04</div>
+        <div>
+          <div class="tt">Logística just-in-time</div>
+          <div class="dsc">Entrega sincronizada con el avance real de obra.</div>
+        </div>
+        <div class="mono" style="color:var(--violet-2); font-size:14px;">Flota propia</div>
+      </div>
+      <div class="flow-step active" style="display:grid; grid-template-columns:80px 1fr auto; align-items:center; gap:24px;">
+        <div class="num-badge">05</div>
+        <div>
+          <div class="tt">Instalación y entrega</div>
+          <div class="dsc">Maestros alumineros de Kinzal. Proyecto cerrado, sin pendientes.</div>
+        </div>
+        <div class="mono" style="color:var(--violet-2); font-size:14px;">Equipo propio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     06 — ALIANZA ACEVEDO
+═══════════════════════════════════════ -->
+<section class="slide bg-paper" data-label="Alianza Acevedo">
+  <div class="s-head dark">
+    <div class="crumb">03 · Modelo</div>
+    <div class="pageno">06 / 19</div>
+  </div>
+
+  <!-- Grid principal: fila superior flex, resto auto -->
+  <div style="display:flex; flex-direction:column; flex:1; gap:14px; min-height:0;">
+
+    <!-- ── FILA SUPERIOR: título izquierda / card AA derecha ── -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:52px; min-height:0;">
+
+      <!-- Izquierda: propuesta de valor -->
+      <div style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="eyebrow dark" style="margin-bottom:16px;">Alianza industrial</div>
+        <h2 class="title" style="color:var(--marine); font-size:44px; line-height:1.08;">
+          Precio de fábrica.<br/>Capacidad de reacción.<br/>Máximo valor al proyecto.
+        </h2>
+        <p style="margin-top:16px; font-size:17px; color:#4a5578; line-height:1.55; max-width:580px;">
+          No somos compradores de perfil — somos socio con acceso total a su línea de producción. Eso elimina intermediarios y nos permite reaccionar a cambios de obra sin mover el calendario, con la estructura de costos más eficiente del sector.
+        </p>
+      </div>
+
+      <!-- Derecha: card Aluminio Acevedo -->
+      <div class="card light" style="padding:28px 32px;">
+        <!-- Logo + info -->
+        <div style="display:flex; align-items:center; gap:28px; padding-bottom:22px; border-bottom:1px solid var(--line-dark);">
+          <img src="assets_web/logos/aluminio-acevedo.png" alt="Aluminio Acevedo" style="height:80px; width:auto; object-fit:contain; flex-shrink:0;"/>
+          <div>
+            <div class="mono" style="color:var(--violet); font-size:12px;">Partner industrial</div>
+            <div class="display" style="font-weight:700; font-size:26px; color:var(--marine); margin-top:5px; line-height:1.1;">Aluminio Acevedo</div>
+            <div style="color:#6b7391; font-size:15px; margin-top:4px;">Planta de extrusión · México</div>
+          </div>
+        </div>
+        <!-- 4 ventajas -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px 28px; margin-top:20px; padding-bottom:22px; border-bottom:1px solid var(--line-dark);">
+          <div>
+            <div class="mono" style="color:var(--violet); font-size:11px; margin-bottom:5px;">Acceso directo</div>
+            <div style="font-size:15px; color:var(--bluegray); line-height:1.45;">Vemos lo que entra a la prensa y cómo sale.</div>
+          </div>
+          <div>
+            <div class="mono" style="color:var(--violet); font-size:11px; margin-bottom:5px;">Herrajes bajo un proveedor</div>
+            <div style="font-size:15px; color:var(--bluegray); line-height:1.45;">Del perfil al herraje, misma ventanilla.</div>
+          </div>
+          <div>
+            <div class="mono" style="color:var(--violet); font-size:11px; margin-bottom:5px;">Acabados propios</div>
+            <div style="font-size:15px; color:var(--bluegray); line-height:1.45;">Pintura, anodizado y sublimado sin depender de terceros.</div>
+          </div>
+          <div>
+            <div class="mono" style="color:var(--violet); font-size:11px; margin-bottom:5px;">Vidrio certificado</div>
+            <div style="font-size:15px; color:var(--bluegray); line-height:1.45;">Integración con Saint-Gobain para control solar y térmico.</div>
+          </div>
+        </div>
+        <!-- Respaldo Industrial — métricas dentro del card -->
+        <div style="margin-top:18px;">
+          <div style="font-size:10px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--violet); margin-bottom:14px;">Respaldo Industrial</div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr);">
+
+            <div style="display:flex; align-items:flex-start; gap:10px; padding-right:18px; border-right:1px solid var(--line-dark);">
+              <div style="width:34px; height:34px; border-radius:8px; background:rgba(155,63,212,0.1); border:1px solid rgba(155,63,212,0.25); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B3FD4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
+              </div>
+              <div>
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:var(--marine); line-height:1;">+300 <span style="font-size:12px; color:var(--violet);">Ton/mes</span></div>
+                <div style="font-size:12px; color:#6b7391; margin-top:3px; line-height:1.4;">Capacidad de extrusión para alta densidad.</div>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:flex-start; gap:10px; padding:0 18px; border-right:1px solid var(--line-dark);">
+              <div style="width:34px; height:34px; border-radius:8px; background:rgba(155,63,212,0.1); border:1px solid rgba(155,63,212,0.25); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B3FD4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 3 21 3 21 9"/>
+                  <polyline points="9 21 3 21 3 15"/>
+                  <line x1="21" y1="3" x2="14" y2="10"/>
+                  <line x1="3" y1="21" x2="10" y2="14"/>
+                </svg>
+              </div>
+              <div>
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:var(--marine); line-height:1;">+5,000 <span style="font-size:12px; color:var(--violet);">m²</span></div>
+                <div style="font-size:12px; color:#6b7391; margin-top:3px; line-height:1.4;">Transformación y acabado de precisión.</div>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:flex-start; gap:10px; padding-left:18px;">
+              <div style="width:34px; height:34px; border-radius:8px; background:rgba(155,63,212,0.1); border:1px solid rgba(155,63,212,0.25); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B3FD4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div>
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:var(--marine); line-height:1.15;">Disponibilidad continua</div>
+                <div style="font-size:12px; color:#6b7391; margin-top:3px; line-height:1.4;">Tiempos de entrega ininterrumpidos.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GALERÍA DE FOTOS — una sola fila, 5 columnas con anchos diferenciados ── -->
+    <!-- Extrusión: 3 columnas anchas (landscape). Pintura: 2 columnas angostas (portrait). -->
+    <!-- Todas ocupan el 100% del alto de la galería, que a su vez toma todo el espacio vertical disponible. -->
+    <div style="display:grid; grid-template-columns: 2.2fr 2.2fr 2.2fr 1fr 1fr; grid-template-rows: 1fr; gap:10px; flex:1; min-height:0;">
+
+      <!-- Extrusión (landscape, anchas) -->
+      <div style="border-radius:10px; overflow:hidden; position:relative; min-height:0;">
+        <img src="../../MATERIAL/FINAL_web/Planta%20Extrusión%201.jpg" alt="Extrusión 1" style="width:100%; height:100%; object-fit:cover; object-position:center center; display:block;"/>
+        <div style="position:absolute; bottom:10px; left:10px; background:rgba(11,20,56,0.72); backdrop-filter:blur(6px); color:#fff; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius:5px;">Extrusión</div>
+      </div>
+      <div style="border-radius:10px; overflow:hidden; position:relative; min-height:0;">
+        <img src="../../MATERIAL/FINAL_web/Planta%20Extrusión%202.jpg" alt="Extrusión 2" style="width:100%; height:100%; object-fit:cover; object-position:center center; display:block;"/>
+        <div style="position:absolute; bottom:10px; left:10px; background:rgba(11,20,56,0.72); backdrop-filter:blur(6px); color:#fff; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius:5px;">Extrusión</div>
+      </div>
+      <div style="border-radius:10px; overflow:hidden; position:relative; min-height:0;">
+        <img src="../../MATERIAL/FINAL_web/Planta%20Extrusión%203.jpg" alt="Extrusión 3" style="width:100%; height:100%; object-fit:cover; object-position:center center; display:block;"/>
+        <div style="position:absolute; bottom:10px; left:10px; background:rgba(11,20,56,0.72); backdrop-filter:blur(6px); color:#fff; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius:5px;">Extrusión</div>
+      </div>
+
+      <!-- Pintura (portrait, angostas y altas) -->
+      <div style="border-radius:10px; overflow:hidden; position:relative; min-height:0;">
+        <img src="../../MATERIAL/FINAL_web/Pintura%201.jpg" alt="Pintura 1" style="width:100%; height:100%; object-fit:cover; object-position:center center; display:block;"/>
+        <div style="position:absolute; bottom:10px; left:10px; background:rgba(11,20,56,0.72); backdrop-filter:blur(6px); color:#fff; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius:5px;">Pintura</div>
+      </div>
+      <div style="border-radius:10px; overflow:hidden; position:relative; min-height:0;">
+        <img src="../../MATERIAL/FINAL_web/Pintura%202.jpg" alt="Pintura 2" style="width:100%; height:100%; object-fit:cover; object-position:center center; display:block;"/>
+        <div style="position:absolute; bottom:10px; left:10px; background:rgba(11,20,56,0.72); backdrop-filter:blur(6px); color:#fff; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius:5px;">Pintura</div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     07 — CAPACIDADES OPERATIVAS
+═══════════════════════════════════════ -->
+<section class="slide bg-ink" data-label="Capacidades">
+  <div class="s-head">
+    <div class="crumb">04 · Capacidad</div>
+    <div class="pageno">07 / 19</div>
+  </div>
+
+  <div>
+    <div class="eyebrow" style="margin-bottom:24px;">Capacidades operativas</div>
+    <h2 class="title" style="max-width:1400px;">Capacidad industrial real.<br/>Estructura LEAN por diseño.</h2>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-top:64px; flex:1; align-content:start;">
+    <div class="card" style="padding:36px;">
+      <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:18px;">— Manufactura</div>
+      <div class="display" style="font-weight:600; font-size:28px; margin-bottom:14px; line-height:1.2;">Extrusión, pintura, anodizado</div>
+      <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.6;">Capacidad propia de los tres procesos críticos. Lotes consistentes, tonos RAL replicables, acabados que no varían pieza a pieza.</div>
+    </div>
+    <div class="card" style="padding:36px;">
+      <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:18px;">— Ingeniería</div>
+      <div class="display" style="font-weight:600; font-size:28px; margin-bottom:14px; line-height:1.2;">Ingeniería de taller</div>
+      <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.6;">Ingeniería de detalle enfocada en el alto desempeño, garantizando precisión, resistencia y estanqueidad en cada proyecto.</div>
+    </div>
+    <div class="card" style="padding:36px;">
+      <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:18px;">— Taller</div>
+      <div class="display" style="font-weight:600; font-size:28px; margin-bottom:14px; line-height:1.2;">Fabricación y red de aliados</div>
+      <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.6;">Cortamos, armamos y sellamos internamente. Red de talleres aliados certificados para escalar volumen sin sacrificar calidad.</div>
+    </div>
+    <div class="card" style="padding:36px;">
+      <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:18px;">— Logística</div>
+      <div class="display" style="font-weight:600; font-size:28px; margin-bottom:14px; line-height:1.2;">Flota y entregas just-in-time</div>
+      <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.6;">Equipo de transporte propio. Material en obra cuando la obra lo necesita, no cuando el proveedor lo libera.</div>
+    </div>
+    <div class="card" style="padding:36px;">
+      <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:18px;">— Instalación</div>
+      <div class="display" style="font-weight:600; font-size:28px; margin-bottom:14px; line-height:1.2;">Maestros alumineros propios</div>
+      <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.6;">Técnicos especializados en proyectos verticales. La instalación es Kinzal, no una cuadrilla subcontratada que desaparece.</div>
+    </div>
+    <div class="card" style="padding:36px;">
+      <div class="mono" style="font-size:14px; color:var(--violet-2); margin-bottom:18px;">— Estructura</div>
+      <div class="display" style="font-weight:600; font-size:28px; margin-bottom:14px; line-height:1.2;">Base en Guadalajara, alcance nacional</div>
+      <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.6;">Estructura reducida y ágil. Sin burocracia interna que frene la respuesta en obra — porque siempre algo cambia.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     08 — CATÁLOGO DE SISTEMAS
+═══════════════════════════════════════ -->
+<section class="slide bg-white" data-label="Catálogo">
+  <div class="s-head dark">
+    <div class="crumb">05 · Soluciones</div>
+    <div class="pageno">08 / 19</div>
+  </div>
+
+  <div>
+    <div class="eyebrow dark" style="margin-bottom:24px;">Catálogo de sistemas</div>
+    <h2 class="title" style="color:var(--marine);">Todo el envolvente<br/>de aluminio y vidrio.</h2>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:32px; margin-top:56px; flex:1;">
+    <!-- Col 1: Verticales -->
+    <div>
+      <div style="padding-bottom:18px; margin-bottom:24px; border-bottom:2px solid var(--violet);">
+        <div class="mono" style="color:var(--violet); font-size:14px; margin-bottom:8px;">01 — Proyectos verticales</div>
+        <div class="display" style="font-weight:700; font-size:30px; color:var(--marine);">Fachada + cancelería</div>
+      </div>
+      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:18px; font-size:20px; color:var(--marine); font-weight:500; line-height:1.4;">
+        <li style="display:flex; gap:14px;"><span style="color:var(--violet); font-weight:700;">—</span> Fachadas integrales (muro cortina)</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--violet); font-weight:700;">—</span> Muro cortina unitizado y semi-unitizado</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--violet); font-weight:700;">—</span> Fachada ventilada</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--violet); font-weight:700;">—</span> Muros de vidrio frameless</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--violet); font-weight:700;">—</span> Fachada de lamas (louvers)</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--violet); font-weight:700;">—</span> Cancelería de aluminio por unidad</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--violet); font-weight:700;">—</span> Barandales de cristal</li>
+      </ul>
+    </div>
+
+    <!-- Col 2: Residencial -->
+    <div>
+      <div style="padding-bottom:18px; margin-bottom:24px; border-bottom:2px solid var(--blue);">
+        <div class="mono" style="color:var(--blue); font-size:14px; margin-bottom:8px;">02 — Residencial premium</div>
+        <div class="display" style="font-weight:700; font-size:30px; color:var(--marine);">Ventanas y puertas</div>
+      </div>
+      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:18px; font-size:20px; color:var(--marine); font-weight:500; line-height:1.4;">
+        <li style="display:flex; gap:14px;"><span style="color:var(--blue); font-weight:700;">—</span> Ventanas y puertas corredizas</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--blue); font-weight:700;">—</span> Puertas abatibles y pivotantes</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--blue); font-weight:700;">—</span> Sistemas plegables y apilables</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--blue); font-weight:700;">—</span> Puertas de cristal templado</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--blue); font-weight:700;">—</span> Cancelería de baño</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--blue); font-weight:700;">—</span> Domos de aluminio y vidrio</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--blue); font-weight:700;">—</span> Portones residenciales</li>
+      </ul>
+    </div>
+
+    <!-- Col 3: Comercial -->
+    <div>
+      <div style="padding-bottom:18px; margin-bottom:24px; border-bottom:2px solid var(--accent3);">
+        <div class="mono" style="color:var(--accent3); font-size:14px; margin-bottom:8px;">03 — Comercial y retail</div>
+        <div class="display" style="font-weight:700; font-size:30px; color:var(--marine);">Estructuras especiales</div>
+      </div>
+      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:18px; font-size:20px; color:var(--marine); font-weight:500; line-height:1.4;">
+        <li style="display:flex; gap:14px;"><span style="color:var(--accent3); font-weight:700;">—</span> Puertas automáticas</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--accent3); font-weight:700;">—</span> Vitrinas y aparadores</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--accent3); font-weight:700;">—</span> Muros divisorios de vidrio</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--accent3); font-weight:700;">—</span> Fijación puntual tipo spider</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--accent3); font-weight:700;">—</span> Revestimientos y acabados decorativos</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--accent3); font-weight:700;">—</span> Sistemas de electroimán y control de acceso</li>
+        <li style="display:flex; gap:14px;"><span style="color:var(--accent3); font-weight:700;">—</span> Pasamanos y barandillas</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     09 — PORTAFOLIO
+═══════════════════════════════════════ -->
+<section class="slide bg-marine" data-label="Portafolio">
+  <div class="s-head">
+    <div class="crumb">06 · Obra</div>
+    <div class="pageno">09 / 19</div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px;">
+    <div>
+      <div class="eyebrow" style="margin-bottom:16px;">Portafolio</div>
+      <h2 class="title" style="font-size:60px;">Obra que habla<br/>por sí sola.</h2>
+    </div>
+    <p style="font-size:20px; color:rgba(255,255,255,0.65); max-width:520px; text-align:right; line-height:1.45; margin:0;">
+      15+ proyectos integrales en Guadalajara — desde torres verticales hasta flagship retail y concesionarias premium.
+    </p>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap:16px; flex:1; min-height:0;">
+    <div class="p-tile" style="grid-column: span 2; grid-row: span 2; min-height:0;">
+      <img src="assets_web/proyectos/shoji-hero.jpg" alt="Shoji"/>
+      <div class="grad"></div>
+      <div class="pbadge">Vertical · Destacado</div>
+      <div class="plab">
+        <div class="name">Shoji</div>
+        <div class="sys">Fachada de lamas de aluminio anodizado · Guadalajara</div>
+      </div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/link-hero.jpg" alt="Link"/>
+      <div class="grad"></div>
+      <div class="pbadge">Vertical</div>
+      <div class="plab"><div class="name">Link</div><div class="sys">Fachada integral</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/iu-hero.jpg" alt="IU Life"/>
+      <div class="grad"></div>
+      <div class="pbadge">Vertical</div>
+      <div class="plab"><div class="name">IU Life</div><div class="sys">Cancelería arquitectónica</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/byd-hero.jpg" alt="BYD"/>
+      <div class="grad"></div>
+      <div class="pbadge">Comercial</div>
+      <div class="plab"><div class="name">BYD</div><div class="sys">Fachada integral</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/citymarket-hero.jpg" alt="CityMarket"/>
+      <div class="grad"></div>
+      <div class="pbadge">Retail</div>
+      <div class="plab"><div class="name">CityMarket</div><div class="sys">Fachada de lamas anodizadas</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     10 — SHOJI
+═══════════════════════════════════════ -->
+<section class="slide bg-ink" data-label="Shoji">
+  <div class="s-head">
+    <div class="crumb">06 · Obra · Proyecto 01</div>
+    <div class="pageno">10 / 19</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1.3fr 1fr; gap:48px; flex:1; min-height:0;">
+    <div style="display:flex; flex-direction:column; gap:12px; min-height:0;">
+      <div class="p-tile" style="flex:1.6; min-height:0;"><img src="assets_web/proyectos/shoji-hero.jpg" alt="Shoji"/></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; min-height:0;">
+        <div class="p-tile" style="min-height:0;"><img src="assets_web/proyectos/shoji-03.jpg" alt="Shoji detalle"/></div>
+        <div class="p-tile" style="min-height:0;"><img src="assets_web/proyectos/shoji-05.jpg" alt="Shoji detalle"/></div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div>
+        <div class="mono" style="color:var(--violet-2); font-size:14px; margin-bottom:10px;">— Guadalajara · Vertical</div>
+        <h2 class="title" style="font-size:56px;">Shoji</h2>
+        <p style="margin-top:14px; font-size:19px; color:rgba(255,255,255,0.72); line-height:1.45; max-width:560px;">
+          Fachada móvil en lamas de aluminio anodizado + pintura + WPC, cancelería completa y muros de vidrio frameless para áreas comunes.
+        </p>
+      </div>
+
+      <div style="display:flex; flex-direction:column;">
+        <div style="padding:12px 0; border-top:1px solid var(--line);">
+          <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:4px;">Alcance Kinzal</div>
+          <div style="font-size:17px; color:#fff; line-height:1.35;">Extrusión · Pintura · Fabricación · Logística · Instalación</div>
+        </div>
+        <div style="padding:12px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+          <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:4px;">Sistemas instalados</div>
+          <div style="font-size:17px; color:#fff; line-height:1.35;">Fachada en lamas anodizadas · Cancelería · Muros frameless · Acabados decorativos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="kfooter"><span>Más detalles de los proyectos en kinzal.ai</span><span>Shoji</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     11 — LINK
+═══════════════════════════════════════ -->
+<section class="slide bg-marine" data-label="Link">
+  <div class="s-head">
+    <div class="crumb">06 · Obra · Proyecto 02</div>
+    <div class="pageno">11 / 19</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1.3fr; gap:48px; flex:1; min-height:0;">
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div>
+        <div class="mono" style="color:var(--violet-2); font-size:14px; margin-bottom:10px;">— Guadalajara · Vertical</div>
+        <h2 class="title" style="font-size:56px;">Link</h2>
+        <p style="margin-top:14px; font-size:19px; color:rgba(255,255,255,0.72); line-height:1.45; max-width:560px;">
+          Proyecto vertical con fachada integral, cancelería, muros de vidrio estructural y control de acceso integrados.
+        </p>
+      </div>
+
+      <div style="display:flex; flex-direction:column;">
+        <div style="padding:12px 0; border-top:1px solid var(--line);">
+          <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:4px;">Alcance Kinzal</div>
+          <div style="font-size:17px; color:#fff; line-height:1.35;">Extrusión · Pintura · Fabricación · Logística · Instalación</div>
+        </div>
+        <div style="padding:12px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+          <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:4px;">Sistemas instalados</div>
+          <div style="font-size:17px; color:#fff; line-height:1.35;">Fachada integral · Muros frameless · Cancelería · Barandales · Vitrinas · Control de acceso</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px; min-height:0;">
+      <div class="p-tile" style="flex:1.6; min-height:0;"><img src="assets_web/proyectos/link-hero.jpg" alt="Link"/></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; min-height:0;">
+        <div class="p-tile" style="min-height:0;"><img src="assets_web/proyectos/link-01.jpg" alt="Link"/></div>
+        <div class="p-tile" style="min-height:0;"><img src="assets_web/proyectos/link-03.jpg" alt="Link"/></div>
+      </div>
+    </div>
+  </div>
+  <div class="kfooter"><span>Más detalles de los proyectos en kinzal.ai</span><span>Link</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     12 — IU LIFE
+═══════════════════════════════════════ -->
+<section class="slide bg-ink" data-label="IU Life">
+  <div class="s-head">
+    <div class="crumb">06 · Obra · Proyecto 03</div>
+    <div class="pageno">12 / 19</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1.3fr 1fr; gap:48px; flex:1; min-height:0;">
+    <div class="p-tile" style="height:100%; min-height:0;"><img src="assets_web/proyectos/iu-hero.jpg" alt="IU Life"/></div>
+
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div>
+        <div class="mono" style="color:var(--violet-2); font-size:14px; margin-bottom:10px;">— Guadalajara · Vertical</div>
+        <h2 class="title" style="font-size:56px;">IU Life</h2>
+        <p style="margin-top:14px; font-size:19px; color:rgba(255,255,255,0.72); line-height:1.45; max-width:560px;">
+          Torre residencial con cancelería unificada — ventanería por unidad y cancelería de vidrio para áreas comunes, con perfil y color replicados pieza a pieza.
+        </p>
+      </div>
+
+      <div style="display:flex; flex-direction:column;">
+        <div style="padding:12px 0; border-top:1px solid var(--line);">
+          <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:4px;">Alcance Kinzal</div>
+          <div style="font-size:17px; color:#fff; line-height:1.35;">Extrusión · Pintura · Fabricación · Logística · Instalación</div>
+        </div>
+        <div style="padding:12px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+          <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:4px;">Sistemas instalados</div>
+          <div style="font-size:17px; color:#fff; line-height:1.35;">Cancelería de aluminio · Cancelería de vidrio · Ventanería por unidad</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="kfooter"><span>Más detalles de los proyectos en kinzal.ai</span><span>IU Life</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     13 — RETAIL / COMERCIAL
+═══════════════════════════════════════ -->
+<section class="slide bg-paper" data-label="Retail y comercial">
+  <div class="s-head dark">
+    <div class="crumb">06 · Obra</div>
+    <div class="pageno">13 / 19</div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px;">
+    <div>
+      <div class="eyebrow dark" style="margin-bottom:16px;">Obra comercial</div>
+      <h2 class="title" style="color:var(--marine); font-size:56px;">Flagship retail<br/>y concesionarias.</h2>
+    </div>
+    <p style="font-size:20px; color:#4a5578; max-width:520px; text-align:right; line-height:1.45; margin:0;">
+      Fachadas integrales, vitrinas, puertas automáticas y muros de vidrio para marcas que exigen consistencia visual entre sucursales.
+    </p>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap:20px; flex:1; min-height:0;">
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/byd-hero.jpg" alt="BYD"/>
+      <div class="grad"></div>
+      <div class="plab"><div class="name">BYD</div><div class="sys">Fachada integral · Automotriz</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/changan-hero.jpg" alt="Changan"/>
+      <div class="grad"></div>
+      <div class="plab"><div class="name">Changan</div><div class="sys">Fachada integral · Automotriz</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/autonova-hero.jpg" alt="Chevrolet Autonova"/>
+      <div class="grad"></div>
+      <div class="plab"><div class="name">Chevrolet Autonova</div><div class="sys">Fachada + muro cortina</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/autonova-circ-hero.jpg" alt="Chevrolet Autonova Circunvalación"/>
+      <div class="grad"></div>
+      <div class="plab"><div class="name">Autonova Circunvalación</div><div class="sys">Fachada · Domos · Vitrinas</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/telcel-hero.jpg" alt="Telcel"/>
+      <div class="grad"></div>
+      <div class="plab"><div class="name">Telcel</div><div class="sys">Fachada · Puertas automáticas</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/albaterra-hero.jpg" alt="Plaza Albaterra"/>
+      <div class="grad"></div>
+      <div class="plab"><div class="name">Plaza Albaterra</div><div class="sys">Cancelería · Barandales</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/innovasport-hero.jpg" alt="InnovaSport"/>
+      <div class="grad"></div>
+      <div class="plab"><div class="name">InnovaSport</div><div class="sys">Fachada integral · Vitrinas</div></div>
+    </div>
+    <div class="p-tile" style="min-height:0;">
+      <img src="assets_web/proyectos/maja-hero.jpg" alt="Maja"/>
+      <div class="grad"></div>
+      <div class="plab"><div class="name">Maja</div><div class="sys">Fachada integral</div></div>
+    </div>
+  </div>
+  <div class="kfooter dark"><span>Más detalles de los proyectos en kinzal.ai</span><span>Retail y comercial</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     14 — PARA QUIÉN TRABAJAMOS
+═══════════════════════════════════════ -->
+<section class="slide bg-white" data-label="Clientes">
+  <div class="s-head dark">
+    <div class="crumb">07 · Clientes</div>
+    <div class="pageno">14 / 19</div>
+  </div>
+
+  <div>
+    <div class="eyebrow dark" style="margin-bottom:24px;">Para quién trabajamos</div>
+    <h2 class="title" style="color:var(--marine);">Hablamos el lenguaje<br/>de quien nos contrata.</h2>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:32px; margin-top:60px; flex:1;">
+    <div class="card light" style="padding:48px; display:flex; flex-direction:column;">
+      <div style="height:5px; background:var(--violet); margin:-48px -48px 36px;"></div>
+      <div class="mono" style="color:var(--violet); font-size:14px; margin-bottom:12px;">01 — Desarrolladoras y constructoras</div>
+      <div class="display" style="font-weight:700; font-size:34px; color:var(--marine); line-height:1.15; margin-bottom:20px;">Capacidad real<br/>para no dejar<br/>la obra tirada.</div>
+      <p style="font-size:19px; color:var(--bluegray); line-height:1.6; flex:1;">Cumplimos tiempos porque controlamos la fabricación. Facturación formal, documentación de proyecto y escalabilidad para desarrollos de varios cuerpos.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:28px;">
+        <span class="tag dark">Tiempos garantizados</span>
+        <span class="tag dark">Facturación formal</span>
+        <span class="tag dark">Escalabilidad</span>
+      </div>
+    </div>
+
+    <div class="card light" style="padding:48px; display:flex; flex-direction:column;">
+      <div style="height:5px; background:linear-gradient(90deg,var(--violet),var(--marine)); margin:-48px -48px 36px;"></div>
+      <div class="mono" style="color:var(--violet); font-size:14px; margin-bottom:12px;">02 — Arquitectos y proyectistas</div>
+      <div class="display" style="font-weight:700; font-size:34px; color:var(--marine); line-height:1.15; margin-bottom:20px;">Tu diseño llega<br/>a obra como<br/>lo dibujaste.</div>
+      <p style="font-size:19px; color:var(--bluegray); line-height:1.6; flex:1;">Nos adaptamos a la especificación, no al revés. Planos de taller, tolerancias y acabados coordinados con el proyecto desde el inicio.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:28px;">
+        <span class="tag dark">Especificación técnica</span>
+        <span class="tag dark">Hermeticidad</span>
+        <span class="tag dark">Planos de taller</span>
+      </div>
+    </div>
+
+    <div class="card light" style="padding:48px; display:flex; flex-direction:column;">
+      <div style="height:5px; background:var(--marine); margin:-48px -48px 36px;"></div>
+      <div class="mono" style="color:var(--violet); font-size:14px; margin-bottom:12px;">03 — Retail y corporativo</div>
+      <div class="display" style="font-weight:700; font-size:34px; color:var(--marine); line-height:1.15; margin-bottom:20px;">Imagen de marca<br/>consistente<br/>entre sucursales.</div>
+      <p style="font-size:19px; color:var(--bluegray); line-height:1.6; flex:1;">Sistemas replicables con acabados que no varían lote a lote. Control propio del color y del perfil para cumplir con el manual de marca en cada punto de venta.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:28px;">
+        <span class="tag dark">Replicabilidad</span>
+        <span class="tag dark">Color RAL exacto</span>
+        <span class="tag dark">Flagship</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     15 — CÓMO OPERAMOS UN PROYECTO
+═══════════════════════════════════════ -->
+<section class="slide bg-ink" data-label="Proceso">
+  <div class="s-head">
+    <div class="crumb">08 · Proceso</div>
+    <div class="pageno">15 / 19</div>
+  </div>
+
+  <div>
+    <div class="eyebrow" style="margin-bottom:22px;">Cómo operamos un proyecto</div>
+    <h2 class="title">De la primera junta<br/>a la entrega cerrada.</h2>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:24px; margin-top:72px; flex:1; align-items:stretch;">
+    <div class="flow-step" style="display:flex; flex-direction:column;">
+      <div class="num-badge" style="margin-bottom:24px;">01</div>
+      <div class="tt">Diseño y especificación</div>
+      <div class="dsc" style="margin-top:12px;">Definimos el sistema junto con el arquitecto o el director de proyecto. Alcance, acabados, tipología de vidrio.</div>
+    </div>
+    <div class="flow-step" style="display:flex; flex-direction:column;">
+      <div class="num-badge" style="margin-bottom:24px;">02</div>
+      <div class="tt">Pintura y fabricación</div>
+      <div class="dsc" style="margin-top:12px;">Producción bajo especificación con control de calidad propio en cada lote.</div>
+    </div>
+    <div class="flow-step" style="display:flex; flex-direction:column;">
+      <div class="num-badge" style="margin-bottom:24px;">03</div>
+      <div class="tt">Logística just-in-time</div>
+      <div class="dsc" style="margin-top:12px;">Entrega coordinada con el frente de obra. Material cuando y donde se necesita.</div>
+    </div>
+    <div class="flow-step active" style="display:flex; flex-direction:column;">
+      <div class="num-badge" style="margin-bottom:24px;">04</div>
+      <div class="tt">Instalación y entrega</div>
+      <div class="dsc" style="margin-top:12px;">Equipo propio en campo. Supervisión, punch-list y entrega sin pendientes.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:56px; padding-top:32px; border-top:1px solid var(--line); display:flex; justify-content:space-between; gap:40px;">
+    <div style="font-size:20px; color:rgba(255,255,255,0.7); max-width:820px; line-height:1.5;">
+      <strong style="color:#fff;">Un punto de contacto directo de inicio a fin.</strong> Si algo cambia en obra — porque siempre algo cambia — ajustamos internamente sin mover el calendario general del proyecto.
+    </div>
+    <div class="tag">Respuesta &lt; 24 h hábiles</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     16 — DIFERENCIADORES (tabla)
+═══════════════════════════════════════ -->
+<section class="slide bg-white" data-label="Diferenciadores">
+  <div class="s-head dark">
+    <div class="crumb">09 · Por qué Kinzal</div>
+    <div class="pageno">16 / 19</div>
+  </div>
+
+  <div>
+    <div class="eyebrow dark" style="margin-bottom:22px;">Diferenciadores</div>
+    <h2 class="title" style="color:var(--marine);">Lo que otros<br/>no pueden ofrecer.</h2>
+  </div>
+
+  <div style="margin-top:48px; flex:1;">
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th style="width:30%;">Capacidad</th>
+          <th style="width:24%;">Kinzal</th>
+          <th style="width:23%;">Fabricante típico</th>
+          <th style="width:23%;">Instalador local</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="us">
+          <td>Extrusión de aluminio propia</td>
+          <td><span class="pill-ok">Sí — alianza con Aluminio Acevedo</span></td>
+          <td><span class="pill-no">No — depende de terceros</span></td>
+          <td><span class="pill-no">No — compra a distribuidor</span></td>
+        </tr>
+        <tr class="us">
+          <td>Pintura, anodizado y sublimado propios</td>
+          <td><span class="pill-ok">Sí — los tres acabados</span></td>
+          <td><span class="pill-no">Parcial — uno o dos</span></td>
+          <td><span class="pill-no">No — subcontratado</span></td>
+        </tr>
+        <tr class="us">
+          <td>Fabricación e instalación con equipo propio</td>
+          <td><span class="pill-ok">Sí — de punta a punta</span></td>
+          <td><span class="pill-no">Fabricación sí, instalación subcontratada</span></td>
+          <td><span class="pill-no">Sólo instalación</span></td>
+        </tr>
+        <tr class="us">
+          <td>Ingeniería de taller y cálculo estructural</td>
+          <td><span class="pill-ok">Sí — firmada por Kinzal</span></td>
+          <td><span class="pill-ok">Sí</span></td>
+          <td><span class="pill-no">Limitada</span></td>
+        </tr>
+        <tr class="us">
+          <td>Respuesta a cambio en obra</td>
+          <td><span class="pill-ok">&lt; 24 h hábiles</span></td>
+          <td><span class="pill-no">Sujeta a la cadena de proveedores</span></td>
+          <td><span class="pill-no">Sujeta al fabricante</span></td>
+        </tr>
+        <tr class="us">
+          <td>Un solo responsable contractual</td>
+          <td><span class="pill-ok">Sí</span></td>
+          <td><span class="pill-no">Coordinación entre partes</span></td>
+          <td><span class="pill-no">Coordinación entre partes</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     17 — SEÑALES DE SERIEDAD (quote-ish)
+═══════════════════════════════════════ -->
+<section class="slide bg-marine" data-label="Operación seria">
+  <div class="s-head">
+    <div class="crumb">10 · Garantía</div>
+    <div class="pageno">17 / 19</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:96px; flex:1; align-items:center;">
+    <div>
+      <div class="eyebrow" style="margin-bottom:36px;">Operación seria</div>
+      <div class="quote">
+        "Siempre hay alguien<br/>
+        a quien llamar.<br/>
+        <em>Siempre.</em>"
+      </div>
+      <p style="margin-top:56px; font-size:22px; color:rgba(255,255,255,0.7); max-width:680px; line-height:1.55;">
+        No somos el instalador que desaparece después de cobrar. Somos una empresa con estructura, con la que se puede hablar si algo falla — y que sigue existiendo cuando hay que resolverlo.
+      </p>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:18px;">
+      <div class="card" style="display:flex; gap:24px; padding:32px 36px; align-items:flex-start;">
+        <div class="num-badge">01</div>
+        <div>
+          <div class="display" style="font-weight:600; font-size:24px; color:#fff; margin-bottom:6px;">Un punto de contacto único</div>
+          <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.5;">De la cotización a la entrega. Coordinación, técnica y decisiones en una sola persona.</div>
+        </div>
+      </div>
+      <div class="card" style="display:flex; gap:24px; padding:32px 36px; align-items:flex-start;">
+        <div class="num-badge">02</div>
+        <div>
+          <div class="display" style="font-weight:600; font-size:24px; color:#fff; margin-bottom:6px;">Garantía real post-entrega</div>
+          <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.5;">Vigente porque seguimos operando. Si algo falla, regresamos a corregirlo.</div>
+        </div>
+      </div>
+      <div class="card" style="display:flex; gap:24px; padding:32px 36px; align-items:flex-start;">
+        <div class="num-badge">03</div>
+        <div>
+          <div class="display" style="font-weight:600; font-size:24px; color:#fff; margin-bottom:6px;">Documentación de proyecto completa</div>
+          <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.5;">Planos de taller, memorias, reporte fotográfico y cierre formal de obra para cada contrato.</div>
+        </div>
+      </div>
+      <div class="card" style="display:flex; gap:24px; padding:32px 36px; align-items:flex-start;">
+        <div class="num-badge">04</div>
+        <div>
+          <div class="display" style="font-weight:600; font-size:24px; color:#fff; margin-bottom:6px;">Facturación formal, cumplimiento fiscal</div>
+          <div style="font-size:18px; color:rgba(255,255,255,0.65); line-height:1.5;">Proveedor dado de alta, al corriente de obligaciones. Listo para contratación corporativa.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     18 — INDICADORES
+═══════════════════════════════════════ -->
+<section class="slide bg-ink" data-label="Indicadores">
+  <div class="s-head">
+    <div class="crumb">11 · Números</div>
+    <div class="pageno">18 / 19</div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+    <div>
+      <div class="eyebrow" style="margin-bottom:28px;">Indicadores</div>
+      <h2 class="title">En números.</h2>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:24px; padding:72px 0;">
+      <div>
+        <div class="display" style="font-weight:700; font-size:180px; line-height:0.9; color:#fff;">12<span style="color:var(--violet-2);">+</span></div>
+        <div style="margin-top:20px; font-size:17px; text-transform:uppercase; letter-spacing:0.14em; color:rgba(255,255,255,0.55); font-weight:600;">Años de oficio<br/>acumulado</div>
+      </div>
+      <div>
+        <div class="display" style="font-weight:700; font-size:180px; line-height:0.9; color:#fff;">15<span style="color:var(--violet-2);">+</span></div>
+        <div style="margin-top:20px; font-size:17px; text-transform:uppercase; letter-spacing:0.14em; color:rgba(255,255,255,0.55); font-weight:600;">Proyectos integrales<br/>entregados</div>
+      </div>
+      <div>
+        <div class="display" style="font-weight:700; font-size:180px; line-height:0.9; color:#fff;">5</div>
+        <div style="margin-top:20px; font-size:17px; text-transform:uppercase; letter-spacing:0.14em; color:rgba(255,255,255,0.55); font-weight:600;">Etapas del aluminio<br/>bajo control propio</div>
+      </div>
+      <div>
+        <div class="display" style="font-weight:700; font-size:180px; line-height:0.9; color:#fff;">&lt;24<span style="color:var(--violet-2);">h</span></div>
+        <div style="margin-top:20px; font-size:17px; text-transform:uppercase; letter-spacing:0.14em; color:rgba(255,255,255,0.55); font-weight:600;">Respuesta a<br/>cambios en obra</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; padding-top:32px; border-top:1px solid var(--line);">
+      <div>
+        <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:10px;">— Alianzas</div>
+        <div style="font-size:22px; color:#fff; line-height:1.4;">Aluminio Acevedo · Extrusiones Metálicas · Herralum · Saint-Gobain</div>
+      </div>
+      <div>
+        <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:10px;">— Ubicación</div>
+        <div style="font-size:22px; color:#fff; line-height:1.4;">Guadalajara, Jalisco · Alcance nacional</div>
+      </div>
+      <div>
+        <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:10px;">— Tipología de obra</div>
+        <div style="font-size:22px; color:#fff; line-height:1.4;">Vertical · Retail flagship · Corporativo · Residencial premium</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     19 — CIERRE / CONTACTO
+═══════════════════════════════════════ -->
+<section class="slide cover" data-label="Contacto">
+  <div class="grid-bg"></div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; position:relative;">
+    <img src="assets_web/kinzal_logo.png" alt="Kinzal" style="height:68px; width:auto; object-fit:contain;" />
+    <div class="logo-mono">Siguiente paso</div>
+  </div>
+
+  <div style="flex:1; display:grid; grid-template-columns: 1.15fr 1fr; gap:96px; align-items:center; position:relative;">
+    <div>
+      <div class="eyebrow" style="margin-bottom:32px;">Hablemos del proyecto</div>
+      <h1 class="title" style="font-size:118px;">
+        Envía planos<br/>o un brief.<br/>
+        Respondemos<br/>
+        <em style="font-style:normal; color:var(--violet-2);">en 24 h.</em>
+      </h1>
+      <p style="margin-top:40px; font-size:26px; color:rgba(255,255,255,0.7); max-width:780px; line-height:1.5;">
+        Cotización formal con alcance, sistemas, acabados, calendario y un punto de contacto asignado desde el primer día.
+      </p>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div class="card" style="padding:36px 40px;">
+        <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:12px;">Correo comercial</div>
+        <div class="display" style="font-weight:600; font-size:32px; color:#fff; letter-spacing:-0.005em;">cotizaciones@kinzal.ai</div>
+      </div>
+      <div class="card" style="padding:36px 40px;">
+        <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:12px;">WhatsApp directo</div>
+        <div class="display" style="font-weight:600; font-size:32px; color:#fff; letter-spacing:-0.005em;">+52 33 3118 8097 Respuesta en horas</div>
+      </div>
+      <div class="card" style="padding:36px 40px;">
+        <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:12px;">Oficina</div>
+        <div class="display" style="font-weight:600; font-size:32px; color:#fff; letter-spacing:-0.005em;">C. Flor de Hortencia 76, CP 45672, Tlajomulco, Jalisco</div>
+        <div style="font-size:18px; color:rgba(255,255,255,0.55); margin-top:8px;">Visitas a planta con cita previa</div>
+      </div>
+      <div class="card" style="padding:36px 40px;">
+        <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:12px;">Teléfonos</div>
+        <div class="display" style="font-weight:600; font-size:32px; color:#fff; letter-spacing:-0.005em;">33 1360 7178 · 33 1070 1018</div>
+      </div>
+      <div class="card" style="padding:36px 40px; background:rgba(155,63,212,0.15); border-color:rgba(155,63,212,0.4);">
+        <div class="mono" style="color:var(--violet-2); font-size:13px; margin-bottom:12px;">Web</div>
+        <div class="display" style="font-weight:600; font-size:32px; color:#fff; letter-spacing:-0.005em;">kinzal.ai</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--line); padding-top:28px; display:flex; justify-content:space-between; color:rgba(255,255,255,0.5); font-size:16px; position:relative;">
+    <div>© 2026 Kinzal · Cancelería arquitectónica y fachadas de aluminio</div>
+    <div>Dossier comercial 2026 — confidencial</div>
+  </div>
+</section>
+
+</deck-stage>
+
+</body>
+</html>
