@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="logo-gradient" width="380" height="152" viewBox="0 0 340 128" fill="none" xmlns="http://www.w3.org/2000/svg" data-src-loc="3985:4103:6398" data-om-id="8ccb8d8b:27">
+        <defs data-src-loc="4112:4118:5265" data-om-id="8ccb8d8b:28">
+          <!-- Gradiente del edificio: dentro del cuadro -->
+          <linearGradient id="kzGradBldg" x1="8" y1="14" x2="78" y2="90" gradientUnits="userSpaceOnUse" data-src-loc="4190:4284:4532" data-om-id="8ccb8d8b:29">
+            <stop offset="0%" stop-color="#1A2A6C" data-src-loc="4297:4339" data-om-id="nc:4297"></stop>
+            <stop offset="45%" stop-color="#2E5BE0" data-src-loc="4352:4394" data-om-id="nc:4352"></stop>
+            <stop offset="78%" stop-color="#7B3FD4" data-src-loc="4407:4449" data-om-id="nc:4407"></stop>
+            <stop offset="100%" stop-color="#9B3FD4" data-src-loc="4462:4504" data-om-id="nc:4462"></stop>
+          </linearGradient>
+          <!-- Gradiente del wordmark KINZAL: span del texto -->
+          <linearGradient id="kzGradWord" x1="95" y1="30" x2="300" y2="80" gradientUnits="userSpaceOnUse" data-src-loc="4608:4704:4952" data-om-id="8ccb8d8b:30">
+            <stop offset="0%" stop-color="#1A2A6C" data-src-loc="4717:4759" data-om-id="nc:4717"></stop>
+            <stop offset="45%" stop-color="#2E5BE0" data-src-loc="4772:4814" data-om-id="nc:4772"></stop>
+            <stop offset="78%" stop-color="#7B3FD4" data-src-loc="4827:4869" data-om-id="nc:4827"></stop>
+            <stop offset="100%" stop-color="#9B3FD4" data-src-loc="4882:4924" data-om-id="nc:4882"></stop>
+          </linearGradient>
+          <linearGradient id="kzGradTag" x1="95" y1="0" x2="324" y2="0" gradientUnits="userSpaceOnUse" data-src-loc="4963:5056:5249" data-om-id="8ccb8d8b:31">
+            <stop offset="0%" stop-color="#1A2A6C" data-src-loc="5069:5111" data-om-id="nc:5069"></stop>
+            <stop offset="50%" stop-color="#2E5BE0" data-src-loc="5124:5166" data-om-id="nc:5124"></stop>
+            <stop offset="100%" stop-color="#9B3FD4" data-src-loc="5179:5221" data-om-id="nc:5179"></stop>
+          </linearGradient>
+        </defs>
+        <!-- Marco exterior con gradiente -->
+        <rect x="8" y="14" width="70" height="76" stroke="url(#kzGradBldg)" stroke-width="3" fill="none" stroke-linecap="square" data-src-loc="5320:5442" data-om-id="nc:5320"></rect>
+        <!-- Líneas internas con el mismo gradiente -->
+        <g stroke="url(#kzGradBldg)" stroke-width="3" fill="none" stroke-linecap="square" data-src-loc="5508:5590:5953" data-om-id="8ccb8d8b:32">
+          <line x1="32" y1="14" x2="32" y2="90" data-src-loc="5601:5640" data-om-id="nc:5601"></line>
+          <line x1="54" y1="14" x2="54" y2="90" data-src-loc="5651:5690" data-om-id="nc:5651"></line>
+          <line x1="8" y1="33" x2="78" y2="33" data-src-loc="5701:5740" data-om-id="nc:5701"></line>
+          <line x1="8" y1="52" x2="78" y2="52" data-src-loc="5751:5790" data-om-id="nc:5751"></line>
+          <line x1="8" y1="71" x2="78" y2="71" data-src-loc="5801:5840" data-om-id="nc:5801"></line>
+          <line x1="20" y1="76" x2="20" y2="90" data-src-loc="5851:5890" data-om-id="nc:5851"></line>
+          <line x1="42" y1="80" x2="42" y2="90" data-src-loc="5901:5940" data-om-id="nc:5901"></line>
+        </g>
+        <text x="95" y="68" fill="url(#kzGradWord)" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="48" letter-spacing="2" data-src-loc="5962:6101:6114" data-om-id="8ccb8d8b:33">KINZAL</text>
+        <line x1="95" y1="80" x2="324" y2="80" stroke="url(#kzGradTag)" stroke-width="1.5" data-src-loc="6123:6207" data-om-id="nc:6123"></line>
+        <text x="95" y="100" fill="url(#kzGradTag)" font-family="Inter, system-ui, sans-serif" font-weight="500" font-size="13" letter-spacing="2.6" data-src-loc="6216:6357:6385" data-om-id="8ccb8d8b:34">INNOVANDO EN ALUMINIO</text>
+      </svg>
